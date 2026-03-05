@@ -6,7 +6,8 @@
         "install-all": "npm install --prefix frontend && npm install --prefix backend && npm install --prefix admin-panel",
         "frontend": "npm run dev --prefix frontend",
         "backend": "npm run dev --prefix backend",
-        "admin": "npm run dev --prefix admin-panel"
+        "admin": "npm run dev --prefix admin-panel",
+        "start-backend": "node backend/server.js"
     },
     "description": "",
     "main": "index.js",
