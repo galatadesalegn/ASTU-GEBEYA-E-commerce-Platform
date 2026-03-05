@@ -36,6 +36,7 @@ const productSchema = new mongoose.Schema({
         required: [true, 'Please provide a product price'],
         min: [0.01, 'Price must be greater than 0'],
     },
+    currency: { type: String, default: 'ETB' },
     category: {
         type: String,
         required: [true, 'Please provide a product category'],

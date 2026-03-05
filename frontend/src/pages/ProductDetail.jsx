@@ -99,22 +99,29 @@ const ProductDetail = () => {
                         animate={{ opacity: 1, x: 0 }}
                         className="space-y-6"
                     >
-                        <div className="aspect-square rounded-[40px] overflow-hidden bg-[var(--bg-card)] premium-shadow group border border-[var(--border-color)]">
-                            <img src={mainImage} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" alt={product.title} />
+                        <div className="relative aspect-square rounded-[40px] overflow-hidden bg-[var(--bg-card)] premium-shadow group border border-[var(--border-color)] cursor-crosshair mb-6">
+                            <img src={mainImage} className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-125" alt={product.title} />
                         </div>
-                        {product.images && product.images.length > 0 && (
-                            <div className="flex gap-4 overflow-x-auto snap-x pb-2 custom-scrollbar">
-                                {product.images.map((img, i) => (
-                                    <div
-                                        key={i}
-                                        onClick={() => setMainImage(img)}
-                                        className={`shrink-0 w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-2xl bg-[var(--bg-card)] border border-[var(--border-color)] overflow-hidden cursor-pointer transition-all snap-start ${mainImage === img ? 'ring-2 ring-orange-500 opacity-100' : 'opacity-60 hover:opacity-100 hover:ring-2 ring-orange-500/50'}`}
-                                    >
-                                        <img src={img} className="h-full w-full object-cover" alt={`view ${i}`} />
+                        {(() => {
+                            const allImages = [product.image, ...(product.images || [])].filter((val, index, self) => self.indexOf(val) === index && val);
+                            if (allImages.length > 1) {
+                                return (
+                                    <div className="flex gap-3 sm:gap-4 overflow-x-auto snap-x pb-4 custom-scrollbar">
+                                        {allImages.map((img, i) => (
+                                            <div
+                                                key={i}
+                                                onClick={() => setMainImage(img)}
+                                                onMouseEnter={() => setMainImage(img)}
+                                                className={`shrink-0 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-2xl bg-[var(--bg-card)] border-2 overflow-hidden cursor-pointer transition-all duration-300 snap-start ${mainImage === img ? 'border-orange-500 shadow-lg shadow-orange-500/30 scale-105 opacity-100' : 'border-[var(--border-color)] opacity-60 hover:opacity-100 hover:border-orange-300'}`}
+                                            >
+                                                <img src={img} className="h-full w-full object-cover" alt={`${product.title} view ${i + 1}`} />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                        )}
+                                );
+                            }
+                            return null;
+                        })()}
                     </motion.div>
 
 
@@ -136,7 +143,7 @@ const ProductDetail = () => {
                         <p className="text-slate-500 text-lg mb-8 leading-relaxed font-medium">{product.description}</p>
 
                         <div className="text-5xl font-black text-slate-900 mb-10">
-                            {product.price} ETB
+                            {product.price} {product.currency || 'ETB'}
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">

@@ -17,7 +17,7 @@ const Cart = () => {
                 </Link>
 
                 <div className="flex flex-col lg:flex-row gap-12">
-                    
+
                     <div className="flex-1 space-y-6">
                         <div className="flex items-center justify-between mb-8">
                             <h1 className="text-4xl font-black text-[var(--text-main)] uppercase tracking-tight">Your Shopping Bag</h1>
@@ -51,7 +51,7 @@ const Cart = () => {
                                         <div className="flex-1 text-center md:text-left">
                                             <div className="text-[10px] font-black text-orange-500 uppercase tracking-[0.2em] mb-1">{item.category}</div>
                                             <h3 className="text-xl font-black text-[var(--text-main)] mb-2 truncate max-w-sm uppercase tracking-tight">{item.title}</h3>
-                                            <p className="text-2xl font-black text-orange-600">{item.price} ETB</p>
+                                            <p className="text-2xl font-black text-orange-600">{item.price} {item.currency || 'ETB'}</p>
                                         </div>
 
                                         <div className="flex flex-col items-center gap-4">
@@ -84,7 +84,7 @@ const Cart = () => {
                         )}
                     </div>
 
-                    
+
                     {cartItems.length > 0 && (
                         <div className="lg:w-96">
                             <div className="bg-[var(--bg-card)] rounded-[40px] p-10 text-[var(--text-main)] sticky top-32 space-y-8 premium-shadow border border-[var(--border-color)]">
@@ -93,18 +93,18 @@ const Cart = () => {
                                 <div className="space-y-4 pt-4">
                                     <div className="flex justify-between text-[var(--text-main)] font-medium opacity-60">
                                         <span className="uppercase text-[10px] font-black tracking-widest">Subtotal</span>
-                                        <span className="text-[var(--text-main)] font-black">{cartTotal.toFixed(2)} ETB</span>
+                                        <span className="text-[var(--text-main)] font-black">{cartTotal.toFixed(2)} {cartItems.length > 0 && cartItems[0].currency ? cartItems[0].currency : 'ETB'}</span>
                                     </div>
                                     <div className="flex justify-between text-[var(--text-main)] font-medium opacity-60">
                                         <span className="uppercase text-[10px] font-black tracking-widest">Tax</span>
-                                        <span className="text-[var(--text-main)] font-black">0.00 ETB</span>
+                                        <span className="text-[var(--text-main)] font-black">0.00 {cartItems.length > 0 && cartItems[0].currency ? cartItems[0].currency : 'ETB'}</span>
                                     </div>
                                 </div>
 
                                 <div className="pt-8 border-t border-[var(--border-color)] flex justify-between items-end">
                                     <div>
                                         <p className="text-[var(--text-main)] opacity-50 text-[10px] font-black uppercase tracking-widest mb-1">Total Amount</p>
-                                        <p className="text-4xl font-black text-[var(--text-main)]">{cartTotal.toFixed(2)} ETB</p>
+                                        <p className="text-4xl font-black text-[var(--text-main)]">{cartTotal.toFixed(2)} {cartItems.length > 0 && cartItems[0].currency ? cartItems[0].currency : 'ETB'}</p>
                                     </div>
                                 </div>
 

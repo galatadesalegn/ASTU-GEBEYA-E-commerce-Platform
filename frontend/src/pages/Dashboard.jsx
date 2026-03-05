@@ -11,7 +11,7 @@ const SellerDashboard = () => {
     const [showForm, setShowForm] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const [formData, setFormData] = useState({
-        title: '', description: '', price: '', category: 'Electronics', stock: '', image: '', images: [], contactPhone: '', socialMediaLink: ''
+        title: '', description: '', price: '', currency: 'ETB', category: 'Electronics', stock: 1, image: '', images: [], contactPhone: '', socialMediaLink: ''
     });
     const categories = ['Electronics', 'Clothing', 'Home & Kitchen', 'Books', 'Beauty', 'Sports', 'Toys', 'Other'];
     const [imageFiles, setImageFiles] = useState([]);
@@ -85,37 +85,39 @@ const SellerDashboard = () => {
         e.preventDefault();
         setUploading(true);
         try {
-            let uploadedImageUrls = formData.images || [];
-            let mainImage = formData.image;
+            let finalImageUrls = [...(formData.images || [])];
 
             if (imageFiles && imageFiles.length > 0) {
-                uploadedImageUrls = [];
-                for (const file of imageFiles) {
-                    const uploadData = new FormData();
-                    uploadData.append('image', file);
-                    const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/upload`, uploadData, {
-                        headers: {
-                            Authorization: `Bearer ${user.token}`,
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    });
-                    uploadedImageUrls.push(data.url);
-                }
-                mainImage = uploadedImageUrls[0];
+                const newUrls = await Promise.all(
+                    imageFiles.map(async (file) => {
+                        const uploadData = new FormData();
+                        uploadData.append('image', file);
+                        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/upload`, uploadData, {
+                            headers: {
+                                Authorization: `Bearer ${user.token}`,
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        });
+                        return data.url;
+                    })
+                );
+                finalImageUrls = [...finalImageUrls, ...newUrls];
             }
 
+            const mainImageToUse = finalImageUrls.length > 0 ? finalImageUrls[0] : '';
+
             if (editingId) {
-                await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products/${editingId}`, { ...formData, image: mainImage, images: uploadedImageUrls }, {
+                await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products/${editingId}`, { ...formData, image: mainImageToUse, images: finalImageUrls }, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products`, { ...formData, image: mainImage, images: uploadedImageUrls }, {
+                await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products`, { ...formData, image: mainImageToUse, images: finalImageUrls }, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
             }
             setShowForm(false);
             setEditingId(null);
-            setFormData({ title: '', description: '', price: '', category: 'Electronics', stock: '', image: '', images: [], contactPhone: '', socialMediaLink: '' });
+            setFormData({ title: '', description: '', price: '', currency: 'ETB', category: 'Electronics', stock: 1, image: '', images: [], contactPhone: '', socialMediaLink: '' });
             setImageFiles([]);
             fetchListings();
             fetchStats();
@@ -136,7 +138,7 @@ const SellerDashboard = () => {
     const handleEdit = (product) => {
         setEditingId(product._id);
         setFormData({
-            title: product.title, description: product.description, price: product.price, category: product.category, stock: product.stock, image: product.image, images: product.images || [], contactPhone: product.contactPhone, socialMediaLink: product.socialMediaLink || ''
+            title: product.title, description: product.description, price: product.price, currency: product.currency || 'ETB', category: product.category, stock: product.stock || 1, image: product.image, images: product.images || [], contactPhone: product.contactPhone, socialMediaLink: product.socialMediaLink || ''
         });
         setImageFiles([]);
         setShowForm(true);
@@ -234,7 +236,7 @@ const SellerDashboard = () => {
                                 <h1 className="text-4xl font-black text-[var(--text-main)] tracking-tight uppercase">Inventory <span className="text-orange-500 italic">Pulse.</span></h1>
                                 <p className="text-[var(--text-muted)] font-medium">Manage your curated store listings.</p>
                             </div>
-                            <button onClick={() => { setShowForm(!showForm); if (!showForm) { setEditingId(null); setFormData({ title: '', description: '', price: '', category: 'Electronics', stock: '', image: '', images: [], contactPhone: '', socialMediaLink: '' }); setImageFiles([]); } }} className={`flex items-center space-x-2 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${showForm ? 'bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-color)] shadow-xl' : 'bg-orange-500 text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600 active:scale-95'}`}>
+                            <button onClick={() => { setShowForm(!showForm); if (!showForm) { setEditingId(null); setFormData({ title: '', description: '', price: '', currency: 'ETB', category: 'Electronics', stock: 1, image: '', images: [], contactPhone: '', socialMediaLink: '' }); setImageFiles([]); } }} className={`flex items-center space-x-2 px-8 py-4 rounded-2xl font-black uppercase tracking-widest text-[10px] transition-all duration-300 ${showForm ? 'bg-[var(--bg-card)] text-[var(--text-main)] border border-[var(--border-color)] shadow-xl' : 'bg-orange-500 text-white shadow-lg shadow-orange-500/20 hover:bg-orange-600 active:scale-95'}`}>
                                 {showForm ? <X className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
                                 <span>{showForm ? 'Dismiss' : 'New Listing'}</span>
                             </button>
@@ -254,19 +256,52 @@ const SellerDashboard = () => {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-[var(--text-main)] uppercase tracking-[0.2em] ml-1">Product Visual(s)</label>
-                                            <input type="file" multiple accept="image/*" className="w-full px-4 py-3 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-orange-500/50 outline-none transition font-bold text-[var(--text-main)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-orange-500/10 file:text-orange-500 hover:file:bg-orange-500 hover:file:text-white cursor-pointer" onChange={(e) => {
-                                                if (e.target.files.length > 4) {
-                                                    showToast('Maximum 4 images allowed', 'error');
+
+                                            {imageFiles.length === 0 && (!formData.images || formData.images.length === 0) && (
+                                                <input type="file" multiple accept="image/*" className="w-full px-4 py-3 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-orange-500/50 outline-none transition font-bold text-[var(--text-main)] file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-orange-500/10 file:text-orange-500 hover:file:bg-orange-500 hover:file:text-white cursor-pointer" onChange={(e) => {
+                                                    const files = Array.from(e.target.files);
+                                                    if (files.length > 4) {
+                                                        showToast('Maximum 4 images allowed', 'error');
+                                                        e.target.value = '';
+                                                        return;
+                                                    }
+                                                    setImageFiles(files);
                                                     e.target.value = '';
-                                                    return;
-                                                }
-                                                setImageFiles(Array.from(e.target.files));
-                                            }} required={(!formData.images || formData.images.length === 0) && (!imageFiles || imageFiles.length === 0)} />
+                                                }} required={true} />
+                                            )}
+
                                             {(imageFiles.length > 0 || (formData.images && formData.images.length > 0)) && (
-                                                <div className="flex gap-2 mt-2">
-                                                    {(imageFiles.length > 0 ? imageFiles.map((file, i) => URL.createObjectURL(file)) : formData.images).map((src, i) => (
-                                                        <img key={i} src={src} className="h-12 w-12 rounded-lg object-cover border border-[var(--border-color)]" alt={`preview ${i}`} />
+                                                <div className="flex flex-wrap gap-4 mt-2 p-4 border border-[var(--border-color)] border-dashed rounded-2xl bg-[var(--bg-main)]">
+                                                    {(formData.images || []).map((src, i) => (
+                                                        <div key={`remote-${i}`} className="relative group">
+                                                            <img src={src} className="h-20 w-20 rounded-xl object-cover border border-[var(--border-color)] shadow-sm" alt={`remote preview ${i}`} />
+                                                            <button type="button" onClick={() => setFormData({ ...formData, images: formData.images.filter((_, idx) => idx !== i) })} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
+                                                        </div>
                                                     ))}
+                                                    {imageFiles.map((file, i) => (
+                                                        <div key={`local-${i}`} className="relative group">
+                                                            <img src={URL.createObjectURL(file)} className="h-20 w-20 rounded-xl object-cover border border-[var(--border-color)] shadow-sm" alt={`local preview ${i}`} />
+                                                            <button type="button" onClick={() => setImageFiles(imageFiles.filter((_, idx) => idx !== i))} className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"><X className="h-3 w-3" /></button>
+                                                        </div>
+                                                    ))}
+
+                                                    {(((formData.images?.length || 0) + imageFiles.length) < 4) && (
+                                                        <label className="h-20 w-20 flex flex-col items-center justify-center rounded-xl border-2 border-[var(--border-color)] border-dashed hover:border-orange-500 cursor-pointer bg-[var(--bg-card)] hover:bg-orange-500/5 transition-all group">
+                                                            <Plus className="h-6 w-6 text-[var(--text-muted)] group-hover:text-orange-500 mb-1 transition-colors" />
+                                                            <span className="text-[8px] font-black uppercase text-[var(--text-muted)] group-hover:text-orange-500 transition-colors">Add Image</span>
+                                                            <input type="file" multiple accept="image/*" className="hidden" onChange={(e) => {
+                                                                const files = Array.from(e.target.files);
+                                                                const currentLength = (formData.images?.length || 0) + imageFiles.length;
+                                                                if (currentLength + files.length > 4) {
+                                                                    showToast('Maximum 4 images allowed in total', 'error');
+                                                                    e.target.value = '';
+                                                                    return;
+                                                                }
+                                                                setImageFiles(prev => [...prev, ...files]);
+                                                                e.target.value = '';
+                                                            }} />
+                                                        </label>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
@@ -275,8 +310,23 @@ const SellerDashboard = () => {
                                             <textarea className="w-full px-6 py-4 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-orange-500/50 outline-none transition h-32 font-bold text-[var(--text-main)] resize-none" placeholder="Details..." value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} required></textarea>
                                         </div>
                                         <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-[var(--text-main)] uppercase tracking-[0.2em] ml-1">Valuation ($)</label>
-                                            <input type="number" className="w-full px-6 py-4 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-orange-500/50 outline-none transition font-bold text-[var(--text-main)] text-xl" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required />
+                                            <label className="text-[10px] font-black text-[var(--text-main)] uppercase tracking-[0.2em] ml-1">Price</label>
+                                            <div className="flex bg-[var(--bg-main)] rounded-2xl border border-[var(--border-color)] focus-within:border-orange-500/50 transition overflow-hidden">
+                                                <input type="number" className="w-full px-6 py-4 bg-transparent outline-none font-bold text-[var(--text-main)] text-xl" value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} required />
+                                                <select className="px-4 py-4 bg-[var(--bg-card)] border-l border-[var(--border-color)] outline-none font-bold text-[var(--text-main)] cursor-pointer appearance-none" value={formData.currency} onChange={(e) => setFormData({ ...formData, currency: e.target.value })}>
+                                                    <option value="ETB">ETB</option>
+                                                    <option value="USD">USD</option>
+                                                    <option value="EUR">EUR</option>
+                                                    <option value="GBP">GBP</option>
+                                                    <option value="AED">AED</option>
+                                                    <option value="SAR">SAR</option>
+                                                    <option value="CNY">CNY</option>
+                                                    <option value="INR">INR</option>
+                                                    <option value="KES">KES</option>
+                                                    <option value="CAD">CAD</option>
+                                                    <option value="AUD">AUD</option>
+                                                </select>
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-[var(--text-main)] uppercase tracking-[0.2em] ml-1">Classification</label>
@@ -291,10 +341,7 @@ const SellerDashboard = () => {
                                                 ))}
                                             </select>
                                         </div>
-                                        <div className="space-y-2">
-                                            <label className="text-[10px] font-black text-[var(--text-main)] uppercase tracking-[0.2em] ml-1">Units</label>
-                                            <input type="number" className="w-full px-6 py-4 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-orange-500/50 outline-none transition font-bold text-[var(--text-main)]" value={formData.stock} onChange={(e) => setFormData({ ...formData, stock: e.target.value })} required />
-                                        </div>
+                                        {/* Units removed */}
                                         <div className="space-y-2">
                                             <label className="text-[10px] font-black text-[var(--text-main)] uppercase tracking-[0.2em] ml-1">Secure Contact</label>
                                             <input type="tel" className="w-full px-6 py-4 rounded-2xl bg-[var(--bg-main)] border border-[var(--border-color)] focus:border-orange-500/50 outline-none transition font-bold text-[var(--text-main)]" placeholder="+251..." value={formData.contactPhone} onChange={(e) => setFormData({ ...formData, contactPhone: e.target.value })} required />
@@ -328,7 +375,7 @@ const SellerDashboard = () => {
                                             <th className="px-8 py-6">Profile</th>
                                             <th className="px-8 py-6">Category</th>
                                             <th className="px-8 py-6">Status</th>
-                                            <th className="px-8 py-6 text-right">Valuation</th>
+                                            <th className="px-8 py-6 text-right">Price</th>
                                             <th className="px-8 py-6 text-right">Actions</th>
                                         </tr>
                                     </thead>
@@ -362,7 +409,7 @@ const SellerDashboard = () => {
                                                         </span>
                                                     </div>
                                                 </td>
-                                                <td className="px-8 py-6 text-right font-black text-orange-500 text-lg">{item.price} ETB</td>
+                                                <td className="px-8 py-6 text-right font-black text-orange-500 text-lg">{item.price} {item.currency || 'ETB'}</td>
                                                 <td className="px-8 py-6 text-right space-x-3">
                                                     <button onClick={() => handleEdit(item)} className="p-3 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-xl hover:bg-orange-500 hover:text-white transition-all scale-100"><Edit className="h-4 w-4" /></button>
                                                     <button onClick={() => handleDelete(item._id)} className="p-3 bg-[var(--bg-main)] border border-[var(--border-color)] rounded-xl hover:bg-red-500 hover:text-white transition-all scale-100"><Trash2 className="h-4 w-4" /></button>
@@ -542,10 +589,10 @@ const SellerDashboard = () => {
                                                         </div>
                                                         <div>
                                                             <p className="text-xs font-black text-[var(--text-main)] uppercase">{item.title}</p>
-                                                            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase">Qty: {item.qty} × {item.price} ETB</p>
+                                                            <p className="text-[10px] font-bold text-[var(--text-muted)] uppercase">Qty: {item.qty} × {item.price} {item.currency || 'ETB'}</p>
                                                         </div>
                                                     </div>
-                                                    <p className="font-black text-[var(--text-main)] text-sm">{(item.qty * item.price).toFixed(2)} ETB</p>
+                                                    <p className="font-black text-[var(--text-main)] text-sm">{(item.qty * item.price).toFixed(2)} {item.currency || 'ETB'}</p>
                                                 </div>
                                             )
                                         ))}

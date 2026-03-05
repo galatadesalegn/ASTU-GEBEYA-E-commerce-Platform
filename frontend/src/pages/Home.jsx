@@ -146,7 +146,7 @@ const Home = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-            
+
             <section
                 className="relative flex items-center justify-center overflow-hidden group/hero min-h-screen"
                 onMouseMove={handleMouseMove}
@@ -157,7 +157,7 @@ const Home = () => {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                
+
                 <motion.div
                     className="pointer-events-none absolute -inset-px opacity-0 group-hover/hero:opacity-100 transition-opacity duration-500 z-0"
                     style={{
@@ -168,7 +168,7 @@ const Home = () => {
                     }}
                 />
 
-                
+
                 <div
                     aria-hidden="true"
                     style={{
@@ -177,7 +177,7 @@ const Home = () => {
                     }}
                 />
 
-                
+
                 <div
                     aria-hidden="true"
                     style={{
@@ -197,7 +197,7 @@ const Home = () => {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.7, ease: 'easeOut' }}
                     >
-                        
+
                         <span
                             className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-[11px] font-bold uppercase tracking-widest mb-10"
                             style={{
@@ -212,7 +212,7 @@ const Home = () => {
                             ASTU GEBEYA — E-Commerce
                         </span>
 
-                        
+
                         <h1
                             className="font-black tracking-tight leading-[1.05] mb-6 flex flex-col items-center"
                             style={{ fontSize: 'clamp(2.8rem, 7vw, 5.5rem)', color: '#ffffff' }}
@@ -265,7 +265,7 @@ const Home = () => {
                             </div>
                         </h1>
 
-                        
+
                         <p
                             className="mx-auto mb-10"
                             style={{ fontSize: '1.125rem', color: 'rgba(255,255,255,0.75)', maxWidth: '480px', lineHeight: 1.7 }}
@@ -273,7 +273,7 @@ const Home = () => {
                             Explore our exclusive selection of quality products.
                         </p>
 
-                        
+
                         <div className="flex flex-wrap items-center justify-center gap-4 mb-14">
                             <a
                                 href="#products"
@@ -305,10 +305,10 @@ const Home = () => {
                 </div>
             </section>
 
-            
+
             <section className="py-20 min-h-screen flex flex-col justify-center bg-[var(--bg-card)] relative overflow-hidden group/products transition-all duration-500 section-perspective" id="products" onMouseMove={handleMouseMove}>
 
-                
+
                 <motion.div style={{ y: parallaxY1 }} className="absolute inset-0 pointer-events-none z-0">
                     <motion.div
                         animate={{ rotateX: [0, 15, 0], rotateY: [0, -20, 0] }}
@@ -325,7 +325,7 @@ const Home = () => {
                     />
                 </motion.div>
 
-                
+
                 <motion.div
                     className="pointer-events-none absolute -inset-px opacity-0 group-hover/products:opacity-100 transition-opacity duration-500 z-0"
                     style={{
@@ -337,7 +337,7 @@ const Home = () => {
                 />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    
+
                     <div className="flex flex-col lg:flex-row justify-between items-center mb-16 gap-8 bg-[var(--bg-card)] p-6 rounded-[30px] border border-[var(--border-color)]">
                         <div className="flex flex-wrap items-center gap-4">
                             {CATEGORIES.map((cat) => (
@@ -439,7 +439,7 @@ const Home = () => {
                                     <div className="px-2">
                                         <div className="flex justify-between items-start mb-1">
                                             <h3 className="text-lg font-black text-[var(--text-main)] uppercase tracking-tighter group-hover:text-orange-500 h-10 line-clamp-2 leading-tight">{product.title}</h3>
-                                            <p className="font-black text-[var(--text-main)]">{product.price} ETB</p>
+                                            <p className="font-black text-[var(--text-main)]">{product.price} {product.currency || 'ETB'}</p>
                                         </div>
                                         <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">{product.category}</p>
                                     </div>
@@ -450,10 +450,10 @@ const Home = () => {
                 </div>
             </section>
 
-            
+
             <section className="py-20 min-h-screen flex flex-col justify-center bg-[var(--bg-section-alt)] relative overflow-hidden group/services transition-all duration-500 section-perspective" id="services" onMouseMove={handleMouseMove}>
 
-                
+
                 <motion.div style={{ y: parallaxY3 }} className="absolute inset-0 pointer-events-none z-0">
                     <motion.div
                         animate={{ rotateZ: [0, 5, 0] }}
@@ -470,7 +470,7 @@ const Home = () => {
                     />
                 </motion.div>
 
-                
+
                 <motion.div
                     className="pointer-events-none absolute -inset-px opacity-0 group-hover/services:opacity-100 transition-opacity duration-500 z-0"
                     style={{
@@ -534,14 +534,14 @@ const Home = () => {
                 </div>
             </section>
 
-            
+
             <motion.section
                 ref={sectionRef}
                 className="py-20 min-h-screen flex flex-col justify-center bg-[var(--bg-section-alt)] text-[var(--text-main)] relative overflow-hidden group/section transition-all duration-700"
                 id="contact"
                 onMouseMove={handleMouseMove}
             >
-                
+
                 <motion.div style={{ y: parallaxY1 }} className="absolute inset-0 pointer-events-none z-0">
                     <motion.div
                         animate={{ x: [0, 30, 0] }}
@@ -558,7 +558,7 @@ const Home = () => {
                     />
                 </motion.div>
 
-                
+
                 <motion.div
                     className="pointer-events-none absolute -inset-px opacity-0 group-hover/section:opacity-100 transition-opacity duration-300 z-0"
                     style={{

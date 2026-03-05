@@ -179,12 +179,12 @@ const Checkout = () => {
                             <div className="bg-orange-50 dark:bg-orange-950/20 p-8 rounded-[32px] border-2 border-orange-200 dark:border-orange-500/20 mb-10">
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="text-orange-600 font-bold uppercase tracking-widest text-[10px]">Order Value</span>
-                                    <span className="font-black text-slate-900 dark:text-white">{cartTotal.toFixed(2)} ETB</span>
+                                    <span className="font-black text-slate-900 dark:text-white">{cartTotal.toFixed(2)} {cartItems.length > 0 && cartItems[0].currency ? cartItems[0].currency : 'ETB'}</span>
                                 </div>
                                 <div className="h-px w-full bg-orange-200 dark:bg-orange-800/20 mb-6" />
                                 <div className="flex justify-between items-center">
                                     <span className="text-slate-900 dark:text-white font-black text-xl uppercase tracking-tighter">Amount to Pay</span>
-                                    <span className="font-black text-orange-600 text-2xl">{cartTotal.toFixed(2)} ETB</span>
+                                    <span className="font-black text-orange-600 text-2xl">{cartTotal.toFixed(2)} {cartItems.length > 0 && cartItems[0].currency ? cartItems[0].currency : 'ETB'}</span>
                                 </div>
                             </div>
 
@@ -193,7 +193,7 @@ const Checkout = () => {
                                     Modify Details
                                 </button>
                                 <button onClick={handlePlaceOrder} disabled={loading} className="w-full sm:w-auto btn-primary !px-12 !py-5 flex items-center justify-center gap-3">
-                                    {loading ? 'Processing Order...' : `Confirm Order for ${cartTotal.toFixed(2)} ETB`}
+                                    {loading ? 'Processing Order...' : `Confirm Order for ${cartTotal.toFixed(2)} ${cartItems.length > 0 && cartItems[0].currency ? cartItems[0].currency : 'ETB'}`}
                                     {!loading && <ChevronRight className="h-5 w-5" />}
                                 </button>
                             </div>
