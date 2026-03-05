@@ -28,8 +28,8 @@ const Sidebar = () => {
     return (
         <aside className="w-72 bg-[var(--bg-card)] border-r border-[var(--border-color)] flex flex-col h-screen sticky top-0 transition-all duration-300">
             <div className="p-8 flex items-center gap-3">
-                <div className="bg-orange-500 p-2 rounded-xl text-white shadow-lg shadow-orange-500/20">
-                    <ShieldCheck size={28} />
+                <div className="h-10 w-10 min-w-10 overflow-hidden rounded-xl shadow-lg shadow-orange-500/20 border border-[var(--border-color)]">
+                    <img src="/astu-gebeya.jpg" alt="Astu Gebeya Logo" className="h-full w-full object-cover" />
                 </div>
                 <div>
                     <h1 className="text-xl font-black text-[var(--text-main)] tracking-tighter uppercase leading-none">ASTU</h1>

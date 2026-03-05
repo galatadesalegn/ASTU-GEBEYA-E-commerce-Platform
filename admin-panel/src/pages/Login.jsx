@@ -40,8 +40,8 @@ const Login = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     className="z-10 text-center"
                 >
-                    <div className="h-24 w-24 bg-orange-500 rounded-[32px] flex items-center justify-center text-white mx-auto shadow-2xl shadow-orange-500/50 mb-12">
-                        <ShieldCheck size={48} />
+                    <div className="h-24 w-24 min-w-24 overflow-hidden rounded-[32px] flex items-center justify-center mx-auto shadow-2xl shadow-orange-500/50 mb-12 border border-white/20">
+                        <img src="/astu-gebeya.jpg" alt="Astu Gebeya Logo" className="h-full w-full object-cover" />
                     </div>
                     <h1 className="text-6xl font-black text-white tracking-widest uppercase mb-4">Central</h1>
                     <p className="text-orange-500 font-extrabold uppercase tracking-[.5em] text-xs">ASTU GEBEYA | Command & Control</p>
