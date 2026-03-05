@@ -90,7 +90,7 @@ const Home = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products`);
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products`);
                 const productList = data.products || (Array.isArray(data) ? data : []);
                 if (productList && productList.length > 0) {
                     const enhancedData = productList.map(p => ({

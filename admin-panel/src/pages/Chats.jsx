@@ -23,7 +23,7 @@ const Chats = () => {
 
     const fetchChats = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/chats`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/chats`, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setConversations(data);
@@ -40,7 +40,7 @@ const Chats = () => {
 
     const handleToggleFlag = async (chatId) => {
         try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/chat/${chatId}/flag`, {}, {
+            const { data } = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/chat/${chatId}/flag`, {}, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setConversations(conversations.map(c => c._id === chatId ? { ...c, isFlagged: data.isFlagged } : c));

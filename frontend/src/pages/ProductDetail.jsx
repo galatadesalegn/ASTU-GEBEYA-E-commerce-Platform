@@ -24,7 +24,7 @@ const ProductDetail = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products/${id}`);
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`);
                 setProduct(data);
                 setMainImage(data.image);
             } catch (error) {
@@ -42,7 +42,7 @@ const ProductDetail = () => {
             return;
         }
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/start`, {
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat/start`, {
                 productId: product._id,
                 sellerId: product.seller
             }, {

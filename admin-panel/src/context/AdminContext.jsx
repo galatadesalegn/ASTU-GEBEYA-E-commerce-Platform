@@ -17,7 +17,7 @@ export const AdminProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/login`, { email, password });
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, { email, password });
 
             if (data.role !== 'Admin') {
                 throw new Error('Not authorized as an admin');

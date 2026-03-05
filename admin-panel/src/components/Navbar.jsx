@@ -17,8 +17,8 @@ const Navbar = () => {
     const fetchAlerts = async () => {
         try {
             const [chatsRes, productsRes] = await Promise.all([
-                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/chats`, { headers: { Authorization: `Bearer ${admin.token}` } }),
-                axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/products`, { headers: { Authorization: `Bearer ${admin.token}` } })
+                axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/chats`, { headers: { Authorization: `Bearer ${admin.token}` } }),
+                axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/products`, { headers: { Authorization: `Bearer ${admin.token}` } })
             ]);
 
             const flaggedChats = chatsRes.data.filter(c => c.isFlagged).map(c => ({

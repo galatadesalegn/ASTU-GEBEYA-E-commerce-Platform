@@ -51,7 +51,7 @@ const Checkout = () => {
                 seller: item.seller,
             }));
 
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/orders`, {
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/orders`, {
                 orderItems,
                 shippingAddress,
                 paymentMethod,

@@ -22,7 +22,7 @@ const Products = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/products`, {
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/products`, {
                     headers: { Authorization: `Bearer ${admin.token}` }
                 });
                 setProducts(data.products || []);
@@ -37,7 +37,7 @@ const Products = () => {
 
     const handleStatusUpdate = async (productId, status) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/product/${productId}/status`, { status }, {
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/product/${productId}/status`, { status }, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setProducts(products.map(p => p._id === productId ? { ...p, status } : p));

@@ -12,7 +12,7 @@ const Inbox = () => {
 
     const fetchConversations = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/chat`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
 
@@ -38,7 +38,7 @@ const Inbox = () => {
         e.stopPropagation();
         if (!window.confirm("Delete this conversation?")) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/${id}`, {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/chat/${id}`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             setConversations(conversations.filter(c => c._id !== id));

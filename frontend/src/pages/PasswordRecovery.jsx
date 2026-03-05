@@ -14,7 +14,7 @@ const PasswordRecovery = () => {
     const [message, setMessage] = useState({ type: '', text: '' });
     const navigate = useNavigate();
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const API_URL = import.meta.env.VITE_BACKEND_URL;
 
     const handleSendOTP = async (e) => {
         e.preventDefault();
@@ -66,7 +66,7 @@ const PasswordRecovery = () => {
 
     return (
         <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-[var(--bg-main)] relative overflow-hidden transition-colors duration-500">
-            
+
             <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-orange-100/30 blur-[100px] rounded-full" />
             <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-slate-200/40 blur-[100px] rounded-full" />
 

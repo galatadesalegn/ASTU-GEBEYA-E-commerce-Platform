@@ -5,7 +5,7 @@ import io from 'socket.io-client';
 import { AuthContext } from '../context/AuthContext';
 import { Send, User as UserIcon, ArrowLeft, MoreHorizontal, ShoppingBag, Edit, Trash2, X } from 'lucide-react';
 
-const socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000');
+const socket = io(import.meta.env.VITE_BACKEND_URL);
 
 const ChatInterface = () => {
     const { conversationId } = useParams();
@@ -22,7 +22,7 @@ const ChatInterface = () => {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/${conversationId}/messages`, {
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/chat/${conversationId}/messages`, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
                 setMessages(data);
@@ -33,7 +33,7 @@ const ChatInterface = () => {
 
         const fetchConversation = async () => {
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat`, {
+                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/chat`, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
                 const current = data.find(c => c._id === conversationId);
@@ -49,7 +49,7 @@ const ChatInterface = () => {
             socket.emit('join_room', conversationId);
 
 
-            axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/${conversationId}/read`, {}, {
+            axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/chat/${conversationId}/read`, {}, {
                 headers: { Authorization: `Bearer ${user.token}` }
             }).catch(err => console.error("Failed to mark as read", err));
         }
@@ -82,7 +82,7 @@ const ChatInterface = () => {
         if (!newMessage.trim()) return;
 
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/message`, {
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat/message`, {
                 conversationId,
                 text: newMessage,
             }, {
@@ -101,7 +101,7 @@ const ChatInterface = () => {
         if (!editText.trim() || !editingMessage) return;
 
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/message/edit`, {
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/chat/message/edit`, {
                 messageId: editingMessage._id,
                 text: editText,
             }, {
@@ -119,7 +119,7 @@ const ChatInterface = () => {
     const handleDeleteMessage = async (messageId) => {
         if (!window.confirm("Delete this message?")) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/message/${messageId}`, {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/chat/message/${messageId}`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
 
@@ -132,7 +132,7 @@ const ChatInterface = () => {
     const handleDeleteConversation = async () => {
         if (!window.confirm("Delete this entire conversation? This cannot be undone.")) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/${conversationId}`, {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/chat/${conversationId}`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             navigate('/inbox');
@@ -146,7 +146,7 @@ const ChatInterface = () => {
     return (
         <div className="bg-[var(--bg-main)] min-h-screen pt-32 pb-20 transition-colors duration-500">
             <div className="max-w-4xl mx-auto h-[80vh] flex flex-col bg-[var(--bg-card)] premium-shadow rounded-[32px] overflow-hidden border border-[var(--border-color)]">
-                
+
                 <div className="px-8 py-6 border-b border-[var(--border-color)] bg-[var(--bg-card)] flex items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link to="/" className="p-2 hover:bg-orange-500/10 rounded-full transition">
@@ -193,7 +193,7 @@ const ChatInterface = () => {
                     </div>
                 </div>
 
-                
+
                 <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-[#f0e0c0] dark:bg-[#1a1614] scroll-smooth">
                     {messages.map((msg, index) => (
                         <div
@@ -239,7 +239,7 @@ const ChatInterface = () => {
                     <div ref={scrollRef} />
                 </div>
 
-                
+
                 <div className="p-6 bg-[var(--bg-card)] border-t border-[var(--border-color)]">
                     {editingMessage ? (
                         <div className="flex flex-col gap-3">

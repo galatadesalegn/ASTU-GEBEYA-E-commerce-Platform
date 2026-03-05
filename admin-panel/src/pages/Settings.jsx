@@ -24,7 +24,7 @@ const Settings = () => {
 
     const fetchStaff = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/staff`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/staff`, {
                 headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo')).token}` },
             });
             setStaff(data);
@@ -37,7 +37,7 @@ const Settings = () => {
         e.preventDefault();
         try {
             await axios.put(
-                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/account/email`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/admin/account/email`,
                 { email: newEmail },
                 { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo')).token}` } }
             );
@@ -53,7 +53,7 @@ const Settings = () => {
         e.preventDefault();
         try {
             await axios.put(
-                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/account/password`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/admin/account/password`,
                 { oldPassword, newPassword },
                 { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo')).token}` } }
             );
@@ -69,7 +69,7 @@ const Settings = () => {
         e.preventDefault();
         try {
             await axios.post(
-                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/staff`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/admin/staff`,
                 inviteData,
                 { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo')).token}` } }
             );
@@ -84,7 +84,7 @@ const Settings = () => {
     const handleRoleChange = async (id, role) => {
         try {
             await axios.put(
-                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/staff/${id}/role`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/admin/staff/${id}/role`,
                 { adminRole: role },
                 { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo')).token}` } }
             );
@@ -98,7 +98,7 @@ const Settings = () => {
     const handleRemove = async (id) => {
         try {
             await axios.delete(
-                `${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/admin/staff/${id}`,
+                `${import.meta.env.VITE_BACKEND_URL}/api/admin/staff/${id}`,
                 { headers: { Authorization: `Bearer ${JSON.parse(localStorage.getItem('adminInfo')).token}` } }
             );
             toast.success('Staff removed');
@@ -219,19 +219,19 @@ const Settings = () => {
                                     <td className="px-4 py-2">{member.name}</td>
                                     <td className="px-4 py-2">{member.email}</td>
                                     <td className="px-4 py-2">
-                            {/* Role Badge */}
-                            <span className={`role-badge role-${member.adminRole.toLowerCase().replace(' ', '-')}`}>{member.adminRole}</span>
-                            {/* Role Selector */}
-                            <select
-                                value={member.adminRole}
-                                onChange={(e) => handleRoleChange(member._id, e.target.value)}
-                                className="input ml-2"
-                            >
-                                <option value="Viewer">Viewer</option>
-                                <option value="Editor">Editor</option>
-                                <option value="Super Admin">Super Admin</option>
-                            </select>
-                        </td>
+                                        {/* Role Badge */}
+                                        <span className={`role-badge role-${member.adminRole.toLowerCase().replace(' ', '-')}`}>{member.adminRole}</span>
+                                        {/* Role Selector */}
+                                        <select
+                                            value={member.adminRole}
+                                            onChange={(e) => handleRoleChange(member._id, e.target.value)}
+                                            className="input ml-2"
+                                        >
+                                            <option value="Viewer">Viewer</option>
+                                            <option value="Editor">Editor</option>
+                                            <option value="Super Admin">Super Admin</option>
+                                        </select>
+                                    </td>
                                     <td className="px-4 py-2 text-center space-x-2">
                                         <button onClick={() => handleRemove(member._id)} className="btn-danger">
                                             <Trash2 size={16} />

@@ -18,20 +18,20 @@ export const AuthProvider = ({ children }) => {
     });
 
     const login = async (email, password) => {
-        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/login`, { email, password });
+        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, { email, password });
         setUser(data);
         localStorage.setItem('user', JSON.stringify(data));
     };
 
     const register = async (name, email, password, role) => {
-        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/register`, { name, email, password, role });
+        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/register`, { name, email, password, role });
         setUser(data);
         localStorage.setItem('user', JSON.stringify(data));
         return data;
     };
 
     const verifyOTP = async (email, otp) => {
-        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/verify-otp`, { email, otp });
+        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/verify-otp`, { email, otp });
         // Update local user state
         if (user) {
             const updatedUser = { ...user, isVerified: true, emailVerified: true };
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     const resendOTP = async (email) => {
-        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/auth/resend-verification`, { email });
+        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/resend-verification`, { email });
         return data;
     };
 

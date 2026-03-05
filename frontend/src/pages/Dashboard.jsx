@@ -31,7 +31,7 @@ const SellerDashboard = () => {
 
     const fetchStats = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/orders/seller/stats`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/seller/stats`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             setStats(data);
@@ -47,7 +47,7 @@ const SellerDashboard = () => {
 
     const fetchIncomingOrders = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/orders/seller/orders`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/seller/orders`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             setIncomingOrders(data);
@@ -58,7 +58,7 @@ const SellerDashboard = () => {
 
     const fetchListings = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products/seller/listings`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/seller/listings`, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             setListings(data);
@@ -92,7 +92,7 @@ const SellerDashboard = () => {
                     imageFiles.map(async (file) => {
                         const uploadData = new FormData();
                         uploadData.append('image', file);
-                        const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/upload`, uploadData, {
+                        const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/upload`, uploadData, {
                             headers: {
                                 Authorization: `Bearer ${user.token}`,
                                 'Content-Type': 'multipart/form-data'
@@ -107,11 +107,11 @@ const SellerDashboard = () => {
             const mainImageToUse = finalImageUrls.length > 0 ? finalImageUrls[0] : '';
 
             if (editingId) {
-                await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products/${editingId}`, { ...formData, image: mainImageToUse, images: finalImageUrls }, {
+                await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/products/${editingId}`, { ...formData, image: mainImageToUse, images: finalImageUrls }, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
             } else {
-                await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products`, { ...formData, image: mainImageToUse, images: finalImageUrls }, {
+                await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products`, { ...formData, image: mainImageToUse, images: finalImageUrls }, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
             }
@@ -151,7 +151,7 @@ const SellerDashboard = () => {
             const sellerItem = order.orderItems.find(item => item.seller.toString() === user._id.toString());
             if (!sellerItem) return;
 
-            const { data } = await axios.post(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/chat/start`, {
+            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/chat/start`, {
                 productId: sellerItem.product,
                 sellerId: user._id,
                 buyerId: order.user // We'll need the backend to handle buyerId in the body if the requester is the seller
@@ -167,7 +167,7 @@ const SellerDashboard = () => {
 
     const handleMarkDelivered = async (orderId) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/orders/${orderId}/deliver`, {}, {
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/deliver`, {}, {
                 headers: { Authorization: `Bearer ${user.token}` }
             });
             showToast("Order marked as delivered!");
@@ -184,7 +184,7 @@ const SellerDashboard = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you certain?')) {
             try {
-                await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/products/${id}`, {
+                await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/products/${id}`, {
                     headers: { Authorization: `Bearer ${user.token}` }
                 });
                 setListings(listings.filter(item => item._id !== id));

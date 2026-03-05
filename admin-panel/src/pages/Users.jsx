@@ -34,7 +34,7 @@ const Users = () => {
 
     const fetchUsers = async () => {
         try {
-            const { data } = await axios.get(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/users`, {
+            const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/users`, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setUsers(data.users || []);
@@ -51,7 +51,7 @@ const Users = () => {
 
     const handleRoleUpdate = async (userId, newRole) => {
         try {
-            await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/user/${userId}`, { role: newRole }, {
+            await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/user/${userId}`, { role: newRole }, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
@@ -62,7 +62,7 @@ const Users = () => {
 
     const handleToggleVerify = async (userId) => {
         try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/user/${userId}/verify`, {}, {
+            const { data } = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/user/${userId}/verify`, {}, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setUsers(users.map(u => u._id === userId ? data : u));
@@ -74,7 +74,7 @@ const Users = () => {
     const handleToggleSuspend = async (userId) => {
         if (!window.confirm("Are you sure you want to change this user's suspension status?")) return;
         try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/user/${userId}/suspend`, {}, {
+            const { data } = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/user/${userId}/suspend`, {}, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setUsers(users.map(u => u._id === userId ? data : u));
@@ -86,7 +86,7 @@ const Users = () => {
     const handleDeleteUser = async (userId) => {
         if (!window.confirm("CRITICAL: Delete this user permanently? This action cannot be undone.")) return;
         try {
-            await axios.delete(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/user/${userId}`, {
+            await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/admin/user/${userId}`, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setUsers(users.filter(u => u._id !== userId));
@@ -98,7 +98,7 @@ const Users = () => {
     const handleEditSubmit = async (e) => {
         e.preventDefault();
         try {
-            const { data } = await axios.put(`${import.meta.env.VITE_API_URL || "http://localhost:5000"}/api/admin/user/${selectedUser._id}`, editData, {
+            const { data } = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/user/${selectedUser._id}`, editData, {
                 headers: { Authorization: `Bearer ${admin.token}` }
             });
             setUsers(users.map(u => u._id === selectedUser._id ? data : u));
