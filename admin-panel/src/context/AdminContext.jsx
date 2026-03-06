@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 export const AdminContext = createContext();
 
@@ -17,7 +17,7 @@ export const AdminProvider = ({ children }) => {
     const login = async (email, password) => {
         setLoading(true);
         try {
-            const { data } = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, { email, password });
+            const { data } = await api.post(`/api/auth/login`, { email, password });
 
             if (data.role !== 'Admin') {
                 throw new Error('Not authorized as an admin');

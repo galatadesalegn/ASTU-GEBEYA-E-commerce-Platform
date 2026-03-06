@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useContext, useRef } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { CartContext } from '../context/CartContext';
 import {
     Search, Filter, ShoppingCart, Star, ArrowRight,
@@ -90,7 +90,7 @@ const Home = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products`);
+                const { data } = await api.get(`/api/products`);
                 const productList = data.products || (Array.isArray(data) ? data : []);
                 if (productList && productList.length > 0) {
                     const enhancedData = productList.map(p => ({

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import {
     Users,
     ShoppingBag,
@@ -44,9 +44,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const { data } = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/stats`, {
-                    headers: { Authorization: `Bearer ${admin.token}` }
-                });
+                const { data } = await api.get(`/api/admin/stats`);
                 setStats(data);
             } catch (error) {
                 console.error("Stats fetch error:", error);
