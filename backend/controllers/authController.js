@@ -394,6 +394,17 @@ export const resetPassword = async (req, res) => {
         }
 
         const hashedOTP = crypto.createHash('sha256').update(otp).digest('hex');
+
+        const user = await User.findOne({
+            email: email.toLowerCase().trim(),
+            resetPasswordOTP: hashedOTP,
+            resetPasswordOTPExpire: { $gt: Date.now() },
+        });
+
+        if (!user) {
+            return res.status(400).json({ message: 'Invalid or expired recovery code' });
+        }
+
         user.password = password;
         // ── Invalidate OTP ──
         user.resetPasswordOTP = undefined;

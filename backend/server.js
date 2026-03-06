@@ -32,42 +32,48 @@ const app = express();
 const httpServer = createServer(app);
 
 // ─── Allowed Origins (restrict in production) ───
-const allowedOrigins = process.env.NODE_ENV === 'production'
-    ? [
-        process.env.FRONTEND_URL,
-        process.env.ADMIN_PANEL_URL,
-    ].filter(Boolean)
-    : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'];
+const allowedOrigins = [
+    'https://astugebeya.vercel.app',
+    'https://astugebeyaadminpanel.vercel.app',
+    process.env.FRONTEND_URL,
+    process.env.ADMIN_PANEL_URL,
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000'
+].filter(Boolean);
+
+// ─── Security Middleware ───
+
+// MUST be before other middleware to handle preflight for all routes
+app.use(cors({
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps or curl)
+        if (!origin) return callback(null, true);
+
+        if (allowedOrigins.indexOf(origin) !== -1 || allowedOrigins.some(ao => origin.startsWith(ao))) {
+            callback(null, true);
+        } else {
+            console.warn(`CORS blocked for origin: ${origin}`);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    credentials: true,
+    optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
+}));
 
 const io = new Server(httpServer, {
     cors: {
         origin: allowedOrigins,
         methods: ['GET', 'POST'],
+        credentials: true
     },
 });
-
-// ─── Security Middleware ───
 
 // Set security HTTP headers
 app.use(helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow Cloudinary images
-}));
-
-// CORS - Restricted to known origins
-app.use(cors({
-    origin: function (origin, callback) {
-        // Allow requests with no origin (mobile apps, curl, etc.) in dev only
-        if (!origin && process.env.NODE_ENV !== 'production') {
-            return callback(null, true);
-        }
-        if (allowedOrigins.includes(origin)) {
-            return callback(null, true);
-        }
-        callback(new Error('Not allowed by CORS'));
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
 }));
 
 // Rate limiting on all API routes
